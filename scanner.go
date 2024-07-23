@@ -239,6 +239,9 @@ func (s *scanner) scan(x1, y1, x2, y2 int, dst []uint8) {
 		for y := y1; y < y2; y++ {
 			i := y*img.Stride + x1
 			for x := x1; x < x2; x++ {
+				if len(img.Palette) < int(img.Pix[i]) {
+					continue
+				}
 				c := s.palette[img.Pix[i]]
 				d := dst[j : j+4 : j+4]
 				d[0] = c.R

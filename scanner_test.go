@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/color/palette"
 	"image/draw"
+	"os"
 	"testing"
 )
 
@@ -104,6 +105,24 @@ func TestScanner(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// Added test for CVE-2023-36308
+// The test should crash and panic if the test would not be applied
+func TestMaliciousPicture(t *testing.T) {
+	file, err := os.Open("./testdata/CVE-2023-36308.tiff")
+	if err != nil {
+		t.Fatal(err)
+	}
+	src, _, err := image.Decode(file)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	img := Grayscale(src)
+	if img.Bounds() != src.Bounds() {
+		t.Fatalf("image bounds mismatch: got %v want %v", img.Bounds(), src.Bounds())
 	}
 }
 
